@@ -29,11 +29,14 @@ def main():
     )
     if not prompt:
         st.stop()
-    st.write("🧞‍♂️ Here's what I found:")
-    response, code_executed = chat_completion(prompt)
-    st.divider()
-    st.write("🧞‍♂️ Under the hood, the code that was executed:")
-    st.code(code_executed)
+    with st.spinner("Generating response..."):
+        st.write("Response:")
+        response, code_executed = chat_completion(prompt)
+        st.write(response)
+        st.write("🧞‍♂️ Here's what I found:")
+        st.divider()
+        st.write("🧞‍♂️ Under the hood, the code that was executed:")
+        st.code(code_executed)
 
 
 if __name__ == '__main__':
