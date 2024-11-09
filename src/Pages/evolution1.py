@@ -19,29 +19,30 @@ st.subheader('INTERACTIVE DATA')
 chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['a', 'b', 'c'])
 
 
-pivoted_data = monthly_travelers.pivot(index='month', columns='year', values='viajeros')
+
+#pivoted_data = monthly_travelers.pivot(index='month', columns='year', values='viajeros')
 
 # Plotting a single line chart with multiple lines (one for each year)
-st.write("Number of Travelers per Month (Comparison by Year)")
-st.line_chart(pivoted_data)
+#st.write("Number of Travelers per Month (Comparison by Year)")
+#st.line_chart(pivoted_data)
 
 
 # Ensure 'day' column is in datetime format
-DATA['day'] = pd.to_datetime(DATA['day'], errors='coerce')
+#DATA['day'] = pd.to_datetime(DATA['day'], errors='coerce')
 
 # Group by year and month, then sum the 'viajeros' column
-monthly_travelers = DATA.groupby(['year', 'month'])['viajeros'].sum().reset_index()
+#monthly_travelers = DATA.groupby(['year', 'month'])['viajeros'].sum().reset_index()
 
 # Get unique years in the dataset
-years = monthly_travelers['year'].unique()
+#years = monthly_travelers['year'].unique()
 
 # Plotting for each year using Streamlit's line_chart
-for year in years:
-    st.write(f"Number of Travelers per Month in {year}")
-    year_data = monthly_travelers[monthly_travelers['year'] == year]
-    # Pivot the data to have 'month' as the index and 'viajeros' as the column for st.line_chart
-    year_data = year_data.set_index('month')
-    st.line_chart(year_data[['viajeros']])
+#for year in years:
+#    st.write(f"Number of Travelers per Month in {year}")
+#   year_data = monthly_travelers[monthly_travelers['year'] == year]
+#   # Pivot the data to have 'month' as the index and 'viajeros' as the column for st.line_chart
+#    year_data = year_data.set_index('month')
+#   st.line_chart(year_data[['viajeros']])
 
 
 

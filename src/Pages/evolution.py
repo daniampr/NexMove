@@ -33,6 +33,9 @@ for i, year in enumerate(years):
         year_data = monthly_travelers[monthly_travelers['year'] == year].set_index('month')
         st.line_chart(year_data[['viajeros']])
 
+# Add the title for province insights
+st.write("## Insights for each province (origin & destination)")
+
 # 3. Layout for province selections and their respective plots
 # Get unique provinces for origin and destination
 origin_provinces = DATA['provincia_origen_name'].unique()
@@ -66,4 +69,40 @@ with col2:
     for year in years:
         st.write(f"#### {year}")
         year_data = monthly_travelers_destino[monthly_travelers_destino['year'] == year].set_index('month')
+        st.line_chart(year_data[['viajeros']])
+
+# Add the title for community insights
+st.write("## Insights for each Autonomous Community (origin & destination)")
+
+# 4. Layout for community selections and their respective plots
+# Get unique communities for origin and destination
+origin_communities = DATA['comunidad_origen'].unique()
+destination_communities = DATA['comunidad_destino'].unique()
+
+col3, col4 = st.columns(2)  # Create two columns for origin and destination community
+
+# Origin Community Selection and Plot
+with col3:
+    selected_community = st.selectbox("Select Origin Autonomous Community", origin_communities)
+    community_data = DATA[DATA['comunidad_origen'] == selected_community]
+    monthly_travelers_origin_community = community_data.groupby(['year', 'month'])['viajeros'].sum().reset_index()
+    
+    st.write(f"### Travelers per Month (Origin Community: {selected_community})")
+    # Plot each year's data separately for the selected origin community
+    for year in years:
+        st.write(f"#### {year}")
+        year_data = monthly_travelers_origin_community[monthly_travelers_origin_community['year'] == year].set_index('month')
+        st.line_chart(year_data[['viajeros']])
+
+# Destination Community Selection and Plot
+with col4:
+    selected_community_destino = st.selectbox("Select Destination Autonomous Community", destination_communities)
+    community_data_destino = DATA[DATA['comunidad_destino'] == selected_community_destino]
+    monthly_travelers_destino_community = community_data_destino.groupby(['year', 'month'])['viajeros'].sum().reset_index()
+    
+    st.write(f"### Travelers per Month (Destination Community: {selected_community_destino})")
+    # Plot each year's data separately for the selected destination community
+    for year in years:
+        st.write(f"#### {year}")
+        year_data = monthly_travelers_destino_community[monthly_travelers_destino_community['year'] == year].set_index('month')
         st.line_chart(year_data[['viajeros']])
