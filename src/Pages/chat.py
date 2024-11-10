@@ -1,7 +1,7 @@
 import matplotlib
 import streamlit as st
 from chatbot.chatbot import chat_completion
-from utils.helpers import DATA
+from utils.helpers import DATA_simple_chat
 
 def main():
 
@@ -16,7 +16,7 @@ def main():
     )
 
     st.write("Data Preview:")
-    st.write(DATA)
+    st.write(DATA_simple_chat)
     prompt = st.text_input(
         "Ask me anything about the data!",  # Input label
         placeholder="Tell me the average number of displacements in 2023."

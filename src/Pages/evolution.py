@@ -8,7 +8,7 @@ from utils.helpers import DATA
 st.set_page_config(layout="wide")
 
 st.header("NexMove: Mobility data at your fingertips", anchor=False, divider="red")
-st.subheader('INTERACTIVE DATA')
+st.subheader('INTERACTIVE DATA: EVOLUTION OVER THE YEARS')
 
 # Ensure 'day' column is in datetime format
 DATA['day'] = pd.to_datetime(DATA['day'], errors='coerce')

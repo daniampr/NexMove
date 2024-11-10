@@ -23,5 +23,11 @@ month_order = [
     'July', 'August', 'September', 'October', 'November', 'December'
 ]
 
-# Convert the 'month' column to a categorical type with the specified order
+day_of_week_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+# Convert the 'month' and 'day_of_week' column to a categorical type with the specified order
 DATA['month'] = pd.Categorical(DATA['month'], categories=month_order, ordered=True)
+DATA['day_of_week'] = pd.Categorical(DATA['day_of_week'], categories=day_of_week_order, ordered=True)
+
+
+DATA_simple_chat = pd.read_csv('../files/dataset/full_dataset.csv')
