@@ -3,7 +3,7 @@ from pandasai import SmartDataframe
 from pandasai.responses.response_parser import ResponseParser
 from langchain_groq.chat_models import ChatGroq
 from dotenv import load_dotenv
-from utils.helpers import DATA
+from utils.helpers import DATA_simple_chat
 import os
 import streamlit as st
 load_dotenv()
@@ -28,7 +28,7 @@ def chat_completion(user_prompt: str):
         model_name="mixtral-8x7b-32768", api_key=os.getenv("GROQ_API_KEY")
     )
     df = SmartDataframe(
-        DATA,
+        DATA_simple_chat,
         config={"llm": llm, "response_parser": OutputParser},
         description="Dataframe containing mobility data in Spain."
         )
