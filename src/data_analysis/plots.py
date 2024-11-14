@@ -80,6 +80,9 @@ def plot_map(data, tooltip_text, dot_size):
     elif dot_size == 'year':
         province_data['radius'] = province_data['total_travelers'] / 5000  # Adjust radius scaling if needed
         zoom_ = 5
+    elif dot_size == 'day':
+        province_data['radius'] = province_data['total_travelers'] / 400  # Adjust radius scaling if needed
+        zoom_ = 4.5
 
     # Set up PyDeck layer
     layer = pdk.Layer(

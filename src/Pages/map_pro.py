@@ -54,9 +54,24 @@ for col, year in zip([col2022, col2023, col2024], [2022, 2023, 2024]):
 
 
 
+###########################################################################################################
 
-############################################################################################################3
+st.write("## Select a Day of the Week")
+st.write("### Note that dot size scaling may change as now they are much smaller numbers")
 
+day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+day = st.selectbox("Select Day", options=day_order)
+
+# Filter the dataset for the selected month
+df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
+df_filtered = df_filtered[df_filtered['day_of_week'] == day]
+
+plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'day')
+
+
+############################################################################################################
+
+#day = st.selectbox("Select Day", options={1,})
 
 
 st.write('## Top 25 Trips')
