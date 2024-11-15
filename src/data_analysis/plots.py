@@ -61,9 +61,14 @@ province_coords = {
 
 
 # Map plotting function
-def plot_map(data, tooltip_text, dot_size):
+def plot_map(data, tooltip_text, dot_size, average):
+    
     # Aggregate total travelers by destination province
-    province_data = data.groupby('provincia_destino_name')['viajeros'].sum().reset_index()
+    if average == 'yes':
+        province_data = data.groupby('provincia_destino_name')['viajeros'].mean().reset_index()
+    else:
+        province_data = data.groupby('provincia_destino_name')['viajeros'].sum().reset_index()
+
     province_data.columns = ['provincia_destino_name', 'total_travelers']
     province_data['formatted_travelers'] = province_data['total_travelers'].apply(lambda x: f"{x:,}")
     
@@ -80,8 +85,8 @@ def plot_map(data, tooltip_text, dot_size):
     elif dot_size == 'year':
         province_data['radius'] = province_data['total_travelers'] / 5000  # Adjust radius scaling if needed
         zoom_ = 5
-    elif dot_size == 'day':
-        province_data['radius'] = province_data['total_travelers'] / 400  # Adjust radius scaling if needed
+    elif dot_size == 'day' and average == 'yes':
+        province_data['radius'] = province_data['total_travelers'] * 10  # Adjust radius scaling if needed
         zoom_ = 4.5
 
     # Set up PyDeck layer
@@ -108,6 +113,125 @@ def plot_map(data, tooltip_text, dot_size):
         initial_view_state=view_state,
         tooltip={"text": "{provincia_destino_name}: {formatted_travelers} travelers"}
     ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##### weather
+
+
+
+# Function to display the basic weather map (with fixed color for dots)
+def display_basic_weather_map(df_weather, selected_date):
+    # Filter the dataframe for the selected date
+    df_weather['day'] = pd.to_datetime(df_weather['day'])
+    filtered_data = df_weather[df_weather['day'] == pd.Timestamp(selected_date)]
+
+    # Map province capitals to their coordinates
+    filtered_data['coords'] = filtered_data['desc_provincia'].map(province_coords)
+
+    # Drop rows without valid coordinates
+    filtered_data = filtered_data.dropna(subset=['coords'])
+
+    # Add latitude and longitude for PyDeck
+    filtered_data['longitude'] = filtered_data['coords'].apply(lambda x: x[1])
+    filtered_data['latitude'] = filtered_data['coords'].apply(lambda x: x[0])
+
+    # PyDeck layer for temperatures (with fixed color)
+    scatter_layer = pdk.Layer(
+        "ScatterplotLayer",
+        data=filtered_data,
+        get_position='[longitude, latitude]',
+        get_radius=20000,  # Fixed radius for dots
+        get_fill_color="[255, 255, 255, 255]", 
+        pickable=True
+    )
+
+    # Map view configuration
+    view_state = pdk.ViewState(
+        latitude=40,
+        longitude=-3,
+        zoom=4.5,
+        pitch=0
+    )
+
+    # Render map with a tooltip showing temperatures
+    st.pydeck_chart(pdk.Deck(
+        layers=[scatter_layer],
+        initial_view_state=view_state,
+        tooltip={"text": "Province: {desc_provincia}\nTemp Max: {tempmax}°C\nTemp Min: {tempmin}°C"}
+    ))
+
+# Function to display the weather map with color transitions based on temperature
+def display_weather_with_color_transition(df_weather, selected_date):
+    # Filter the dataframe for the selected date
+    df_weather['day'] = pd.to_datetime(df_weather['day'])
+    filtered_data = df_weather[df_weather['day'] == pd.Timestamp(selected_date)]
+
+    # Map province capitals to their coordinates
+    filtered_data['coords'] = filtered_data['desc_provincia'].map(province_coords)
+
+    # Drop rows without valid coordinates
+    filtered_data = filtered_data.dropna(subset=['coords'])
+
+    # Add latitude and longitude for PyDeck
+    filtered_data['longitude'] = filtered_data['coords'].apply(lambda x: x[1])
+    filtered_data['latitude'] = filtered_data['coords'].apply(lambda x: x[0])
+
+    # Calculate average temperature
+    filtered_data['temp_avg'] = (filtered_data['temp'])
+
+    # Define color transition formula based on temp_avg
+    def get_color(temp):
+        if temp <= 10:
+            # Blue to Yellow transition
+            return [0, int((temp / 10) * 255), 255, 160]
+        elif temp <= 20:
+            # Yellow to Orange transition
+            return [int(((temp - 10) / 10) * 255), 255, 0, 160]
+        else:
+            # Orange to Red transition
+            return [255, int((1 - (temp - 20) / 10) * 128), 0, 160]
+
+    filtered_data['color'] = filtered_data['temp_avg'].apply(get_color)
+
+    # PyDeck layer for temperatures with continuous color transitions
+    scatter_layer = pdk.Layer(
+        "ScatterplotLayer",
+        data=filtered_data,
+        get_position='[longitude, latitude]',
+        get_radius=20000,  # Fixed radius for dots
+        get_fill_color='color',  # Dynamic color
+        pickable=True
+    )
+
+    # Map view configuration
+    view_state = pdk.ViewState(
+        latitude=40,
+        longitude=-3,
+        zoom=4.5,
+        pitch=0
+    )
+
+    # Render map with a tooltip showing temperatures
+    st.pydeck_chart(pdk.Deck(
+        layers=[scatter_layer],
+        initial_view_state=view_state,
+        tooltip={"text": "Province: {desc_provincia}\nTemp Avg: {temp_avg}°C"}
+    ))
+
 
 
 

@@ -12,7 +12,7 @@ DATA['day'] = pd.to_datetime(DATA['day'], errors='coerce')
 
 # Select the year and month
 st.write("## Select a Year and Month for Analysis")
-selected_year = st.selectbox("Year", sorted(DATA['year'].unique()))
+selected_year = st.selectbox("Year", sorted(DATA['year'].unique()), index = 1)
 selected_month = st.selectbox("Month", sorted(DATA['month'].unique()))
 
 # Filter data for the selected month and year
@@ -27,7 +27,7 @@ destination_provinces = sorted(filtered_month_data['provincia_destino_name'].uni
 
 # User selection for origin and destination provinces
 selected_origin_province = st.selectbox("Select Origin Province", origin_provinces)
-selected_destination_province = st.selectbox("Select Destination Province", destination_provinces)
+selected_destination_province = st.selectbox("Select Destination Province", destination_provinces, index = 2)
 
 # Filter data for the selected origin and destination provinces
 filtered_trip_data_provinces = filtered_month_data[
