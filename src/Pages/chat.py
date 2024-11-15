@@ -26,6 +26,7 @@ def main():
     st.write("🧞‍♂️ Here's what I found:")
     response, code_executed = chat_completion(prompt)
     st.divider()
+    st.write(response)
     st.write("🧞‍♂️ Under the hood, the code that was executed:")
     st.code(code_executed)
 
