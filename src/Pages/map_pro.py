@@ -4,6 +4,7 @@ import pydeck as pdk
 import matplotlib.pyplot as plt
 from utils.helpers import DATA
 from data_analysis.plots import plot_map, province_coords
+from datetime import datetime
 
 st.set_page_config(layout="wide")
 
@@ -13,7 +14,7 @@ st.write("# Map of Total Travelers by Province Of Destination")
 st.write("Provinces are displayed with larger circles based on the total number of travelers.")
 
 df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
-plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'year')
+plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'year', average = 'no')
 
 
 
@@ -46,7 +47,7 @@ for col, year in zip([col2022, col2023, col2024], [2022, 2023, 2024]):
         # Check if year_data is empty
         if not year_data.empty:
             # Call the plot function for the filtered data in the selected column
-            plot_map(year_data, f"{year} - {{provincia_destino_name}}: {{total_travelers}} travelers", dot_size='month')
+            plot_map(year_data, f"{year} - {{provincia_destino_name}}: {{total_travelers}} travelers", dot_size='month', average = 'no')
         else:
             st.write(f"No data available for {year} in {month}.")
 
@@ -56,25 +57,54 @@ for col, year in zip([col2022, col2023, col2024], [2022, 2023, 2024]):
 
 ###########################################################################################################
 
-st.write("## Select a Day of the Week")
+st.write("## Select a Day of the Week And The Month For The Average Number of Travelers")
 st.write("### Note that dot size scaling may change as now they are much smaller numbers")
 
 day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 day = st.selectbox("Select Day", options=day_order)
 
+month_order_ = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December ']
+month_ = st.selectbox("Select Month", options=month_order_)
+
 # Filter the dataset for the selected month
 df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
 df_filtered = df_filtered[df_filtered['day_of_week'] == day]
+df_filtered = df_filtered[df_filtered['month'] == month_]
 
-plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'day')
+plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'day', average = 'yes')
+
 
 
 ############################################################################################################
 
-#day = st.selectbox("Select Day", options={1,})
+
+st.write("## Select a Day For The Average Number of Travelers")
+st.write("### Note that dot size scaling may change as now they are much smaller numbers")
+
+# Select a specific day using a calendar input
+selected_date = st.date_input("Select a date", value = datetime(2022, 9, 1))
+selected_date = str(selected_date)
+
+# Filter the dataset for the selected month
+df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
+df_filtered = df_filtered[df_filtered['day'] == selected_date]
+
+plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'day', average = 'yes')
 
 
-st.write('## Top 25 Trips')
+
+############################################################################################################
+
+
+
+st.write('## Top Trips')
+
+
+# Select the number of top trips
+num_trips = st.selectbox(
+    "Select the number of top trips to display", options=[5, 10, 15, 20, 25, 30, 40, 50], index=5)
+
+
 
 
 # Standardize trip pairs and aggregate data
@@ -86,7 +116,7 @@ top_trips = (
     .sum()
     .reset_index()
     .sort_values(by='viajeros', ascending=False)
-    .head(25)
+    .head(num_trips)
 )
 
 # Split standardized pairs back into origin and destination for coordinate mapping
