@@ -28,7 +28,7 @@ st.write("## Select a Month to View Total Travelers per Province for Each Year (
 st.write("### Note that dot size scaling may change as now they are much smaller numbers")
 
 month_order = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-month = st.selectbox("Select Month", options=month_order)
+month = st.selectbox("Select Month", options=month_order, index=8)
 
 # Filter the dataset for the selected month
 df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
