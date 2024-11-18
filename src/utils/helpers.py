@@ -35,8 +35,6 @@ data2_chat = pd.read_csv('../files/dataset/dataset_eng_withdist_2023.csv')
 data3_chat = pd.read_csv('../files/dataset/dataset_eng_withdist_2024.csv')
 
 DATA_simple_chat = pd.concat([data1_chat, data2_chat, data3_chat], ignore_index=True)
-DATA_simple_chat = pd.read_csv('../files/dataset/full_dataset.csv')
-
 
 
 

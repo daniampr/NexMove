@@ -3,6 +3,7 @@ import streamlit as st
 from chatbot.chatbot import chat_completion
 from utils.helpers import DATA_simple_chat
 
+
 def main():
 
     st.header(
@@ -25,7 +26,6 @@ def main():
         st.stop()
     st.write("🧞‍♂️ Here's what I found:")
     response, code_executed = chat_completion(prompt)
-    st.divider()
     st.write(response)
     st.write("🧞‍♂️ Under the hood, the code that was executed:")
     st.code(code_executed)
