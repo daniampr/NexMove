@@ -18,6 +18,7 @@ def main():
 
     st.write("Data Preview:")
     st.write(DATA_simple_chat)
+    model = st.selectbox("Select model", ["gpt-4o", "mixtral-8x7b-32768"], key="model")
     prompt = st.text_input(
         "Ask me anything about the data!",  # Input label
         placeholder="Tell me the average number of displacements in 2023."
@@ -25,7 +26,7 @@ def main():
     if not prompt:
         st.stop()
     st.write("🧞‍♂️ Here's what I found:")
-    response, code_executed = chat_completion(prompt)
+    response, code_executed = chat_completion(prompt, model)
     st.write(response)
     st.write("🧞‍♂️ Under the hood, the code that was executed:")
     st.code(code_executed)
