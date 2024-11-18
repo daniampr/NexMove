@@ -119,10 +119,8 @@ def main():
             year_data = monthly_travelers[monthly_travelers['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
-    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
-
-    # Sección de provincias
-    st.write("## Insights for each province (origin & destination)")
+# Add the title for province insights
+st.write("## Insights for each province (origin & destination)")
 
     # Obtener provincias únicas para origen y destino
     origin_provinces = DATA['provincia_origen_name'].unique()
@@ -158,10 +156,8 @@ def main():
             year_data = monthly_travelers_destino[monthly_travelers_destino['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
-    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
-
-    # Sección de comunidades autónomas
-    st.write("## Insights for each Autonomous Community (origin & destination)")
+# Add the title for community insights
+st.write("## Insights for each Autonomous Community (origin & destination)")
 
     # Obtener comunidades únicas para origen y destino
     origin_communities = DATA['comunidad_origen'].unique()
@@ -194,6 +190,3 @@ def main():
             st.write(f"#### {year}")
             year_data = monthly_travelers_destino_community[monthly_travelers_destino_community['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
-
-if __name__ == '__main__':
-    main()
