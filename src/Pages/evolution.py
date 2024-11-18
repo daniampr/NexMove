@@ -36,6 +36,14 @@ for i, year in enumerate(years):
 # Add the title for province insights
 st.write("## Insights for each province (origin & destination)")
 
+
+
+
+
+
+
+###################################################################################   PROVINCES
+
 # 3. Layout for province selections and their respective plots
 # Get unique provinces for origin and destination
 origin_provinces = DATA['provincia_origen_name'].unique()
@@ -71,6 +79,46 @@ with col2:
         year_data = monthly_travelers_destino[monthly_travelers_destino['year'] == year].set_index('month')
         st.line_chart(year_data[['viajeros']])
 
+
+
+col1, col2 = st.columns(2)  # Create two columns for origin and destination
+
+# Origin Province Selection and Plot
+with col1:
+    province_data = DATA[DATA['provincia_origen_name'] == selected_province]
+    daily_travelers_origin = province_data.groupby(['year', 'day_of_week'])['viajeros'].sum().reset_index()
+    
+    st.write(f"### Travelers by Day of Week (Origin: {selected_province})")
+    
+    # Plot each year's data separately for the selected origin province
+    for year in years:
+        st.write(f"#### {year}")
+        year_data = daily_travelers_origin[daily_travelers_origin['year'] == year].set_index('day_of_week')
+        st.line_chart(year_data[['viajeros']])
+
+# Destination Province Selection and Plot
+with col2:
+    province_data_destino = DATA[DATA['provincia_destino_name'] == selected_province_destino]
+    daily_travelers_destino = province_data_destino.groupby(['year', 'day_of_week'])['viajeros'].sum().reset_index()
+    
+    st.write(f"### Travelers by Day of Week (Destination: {selected_province_destino})")
+    
+    # Plot each year's data separately for the selected destination province
+    for year in years:
+        st.write(f"#### {year}")
+        year_data = daily_travelers_destino[daily_travelers_destino['year'] == year].set_index('day_of_week')
+        st.line_chart(year_data[['viajeros']])
+
+
+
+
+
+
+
+###################################################################################   COMMUNITIES
+
+
+
 # Add the title for community insights
 st.write("## Insights for each Autonomous Community (origin & destination)")
 
@@ -105,4 +153,32 @@ with col4:
     for year in years:
         st.write(f"#### {year}")
         year_data = monthly_travelers_destino_community[monthly_travelers_destino_community['year'] == year].set_index('month')
+        st.line_chart(year_data[['viajeros']])
+
+col3, col4 = st.columns(2)  # Create two columns for origin and destination community
+
+# Origin Community Selection and Plot
+with col3:
+    
+    community_data = DATA[DATA['comunidad_origen'] == selected_community]
+    daily_travelers_origin_community = community_data.groupby(['year', 'day_of_week'])['viajeros'].sum().reset_index()
+    
+    st.write(f"### Travelers by Day of Week (Origin Community: {selected_community})")
+    # Plot each year's data separately for the selected origin community
+    for year in years:
+        st.write(f"#### {year}")
+        year_data = daily_travelers_origin_community[daily_travelers_origin_community['year'] == year].set_index('day_of_week')
+        st.line_chart(year_data[['viajeros']])
+
+# Destination Community Selection and Plot
+with col4:
+    
+    community_data_destino = DATA[DATA['comunidad_destino'] == selected_community_destino]
+    daily_travelers_destino_community = community_data_destino.groupby(['year', 'day_of_week'])['viajeros'].sum().reset_index()
+    
+    st.write(f"### Travelers by Day of Week (Destination Community: {selected_community_destino})")
+    # Plot each year's data separately for the selected destination community
+    for year in years:
+        st.write(f"#### {year}")
+        year_data = daily_travelers_destino_community[daily_travelers_destino_community['year'] == year].set_index('day_of_week')
         st.line_chart(year_data[['viajeros']])
