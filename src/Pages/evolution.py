@@ -84,16 +84,10 @@ def main():
     setup()  # Configuración inicial
 
     # Títulos principales
-    st.markdown(
-        """
-        <div class='header-container'>
-            <div class='header-title'>NexMove: Data Evolution</div>
-            <div class='header-subtitle'>Interactive Insights Over the Years</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    #st.markdown("<h1 class='main-title'>NexMove: Mobility data at your fingertips</h1>", unsafe_allow_html=True)
+    st.markdown("<h2 class='subtitle'>INTERACTIVE DATA: EVOLUTION OVER THE YEARS</h2>", unsafe_allow_html=True)
 
+    # Línea divisoria
     st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 
     # Asegurarse de que 'day' esté en formato datetime
@@ -119,8 +113,10 @@ def main():
             year_data = monthly_travelers[monthly_travelers['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
-# Add the title for province insights
-st.write("## Insights for each province (origin & destination)")
+    st.divider()
+
+    # Sección de provincias
+    st.write("## Insights for each province (origin & destination)")
 
     # Obtener provincias únicas para origen y destino
     origin_provinces = DATA['provincia_origen_name'].unique()
@@ -156,8 +152,10 @@ st.write("## Insights for each province (origin & destination)")
             year_data = monthly_travelers_destino[monthly_travelers_destino['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
-# Add the title for community insights
-st.write("## Insights for each Autonomous Community (origin & destination)")
+    st.divider()
+
+    # Sección de comunidades autónomas
+    st.write("## Insights for each Autonomous Community (origin & destination)")
 
     # Obtener comunidades únicas para origen y destino
     origin_communities = DATA['comunidad_origen'].unique()
@@ -190,3 +188,6 @@ st.write("## Insights for each Autonomous Community (origin & destination)")
             st.write(f"#### {year}")
             year_data = monthly_travelers_destino_community[monthly_travelers_destino_community['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
+
+if __name__ == '__main__':
+    main()
