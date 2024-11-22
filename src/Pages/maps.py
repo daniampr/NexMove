@@ -55,44 +55,6 @@ for col, year in zip([col2022, col2023, col2024], [2022, 2023, 2024]):
 
 
 
-###########################################################################################################
-
-st.write("## Select a Day of the Week And The Month For The Average Number of Travelers")
-st.write("### Note that dot size scaling may change as now they are much smaller numbers")
-
-day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-day = st.selectbox("Select Day", options=day_order)
-
-month_order_ = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December ']
-month_ = st.selectbox("Select Month", options=month_order_)
-
-# Filter the dataset for the selected month
-df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
-df_filtered = df_filtered[df_filtered['day_of_week'] == day]
-df_filtered = df_filtered[df_filtered['month'] == month_]
-
-plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'day', average = 'yes')
-
-
-
-############################################################################################################
-
-
-st.write("## Select a Day For The Average Number of Travelers")
-st.write("### Note that dot size scaling may change as now they are much smaller numbers")
-
-# Select a specific day using a calendar input
-selected_date = st.date_input("Select a date", value = datetime(2022, 9, 1))
-selected_date = str(selected_date)
-
-# Filter the dataset for the selected month
-df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
-df_filtered = df_filtered[df_filtered['day'] == selected_date]
-
-plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'day', average = 'yes')
-
-
-
 ############################################################################################################
 
 
@@ -162,6 +124,47 @@ st.pydeck_chart(pdk.Deck(
     initial_view_state=view_state,
     tooltip={"text": "{origin} to {destination}: {viajeros} travelers"}
 ))
+
+
+
+
+
+###########################################################################################################
+
+st.write("## Select a Day of the Week And The Month For The Average Number of Travelers")
+st.write("### Note that dot size scaling may change as now they are much smaller numbers")
+
+day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+day = st.selectbox("Select Day", options=day_order)
+
+month_order_ = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December ']
+month_ = st.selectbox("Select Month", options=month_order_)
+
+# Filter the dataset for the selected month
+df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
+df_filtered = df_filtered[df_filtered['day_of_week'] == day]
+df_filtered = df_filtered[df_filtered['month'] == month_]
+
+plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'day', average = 'yes')
+
+
+
+############################################################################################################
+
+
+st.write("## Select a Day For The Average Number of Travelers")
+st.write("### Note that dot size scaling may change as now they are much smaller numbers")
+
+# Select a specific day using a calendar input
+selected_date = st.date_input("Select a date", value = datetime(2022, 9, 1))
+selected_date = str(selected_date)
+
+# Filter the dataset for the selected month
+df_filtered = DATA[DATA['provincia_destino_name'].isin(province_coords.keys())]
+df_filtered = df_filtered[df_filtered['day'] == selected_date]
+
+plot_map(df_filtered, "{provincia_destino_name}: {total_travelers} travelers", dot_size = 'day', average = 'yes')
+
 
 
 

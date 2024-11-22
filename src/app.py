@@ -119,9 +119,6 @@ def main():
     # Espaciador para que el contenido no quede debajo del encabezado fijo
     st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
 
-    # Reproducir automaticamente video de youtube
-    st.video("https://www.youtube.com/watch?v=SBpZzWt_Wc4", autoplay=True)
-
     # Sección de descripción con desplegables personalizados
     with st.expander("Who are we?", expanded=False):
         st.markdown("We are five students from the UPF Project Management course who have come together, forming a diverse team that combines expertise in Data Science, Audiovisual Engineering, and Telecommunications. Each of us brings a unique technical background, creating a well-rounded group driven by a shared passion for innovation.")
@@ -131,6 +128,11 @@ def main():
 
     with st.expander("Our mission", expanded=False):
         st.markdown("Our mission is to collaborate with Telefónica on a project that aligns with our studies while exploring our interests in Natural Language Generation and Data Analysis/Visualization. By combining our skills, we want to build a tool that helps Telefónica better organize and understand its data.")
+
+
+    
+    # Reproducir automaticamente video de youtube
+    st.video("https://www.youtube.com/watch?v=SBpZzWt_Wc4", autoplay=True)
 
     # Pie de página
     st.markdown(

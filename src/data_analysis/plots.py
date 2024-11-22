@@ -231,10 +231,3 @@ def display_weather_with_color_transition(df_weather, selected_date):
         initial_view_state=view_state,
         tooltip={"text": "Province: {desc_provincia}\nTemp Avg: {temp_avg}°C"}
     ))
-
-
-
-
-
-
-
