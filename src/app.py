@@ -2,10 +2,12 @@ import streamlit as st
 from PIL import Image
 import base64
 
+
 # Function to encode image to base64
 def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode()
+
 
 # Configuración inicial
 def setup():
@@ -95,6 +97,7 @@ def setup():
         unsafe_allow_html=True
     )
 
+
 # Función principal
 def main():
     setup()  # Configuración inicial
@@ -116,6 +119,9 @@ def main():
     # Espaciador para que el contenido no quede debajo del encabezado fijo
     st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
 
+    # Reproducir automaticamente video de youtube
+    st.video("https://www.youtube.com/watch?v=SBpZzWt_Wc4", autoplay=True)
+
     # Sección de descripción con desplegables personalizados
     with st.expander("Who are we?", expanded=False):
         st.markdown("We are five students from the UPF Project Management course who have come together, forming a diverse team that combines expertise in Data Science, Audiovisual Engineering, and Telecommunications. Each of us brings a unique technical background, creating a well-rounded group driven by a shared passion for innovation.")
@@ -131,6 +137,7 @@ def main():
         "<div class='footer'>© 2024 NexMove. All rights reserved.</div>",
         unsafe_allow_html=True
     )
+
 
 if __name__ == '__main__':
     main()
