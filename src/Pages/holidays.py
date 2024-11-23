@@ -157,19 +157,51 @@ def main():
     filtered_data_easter = DATA[(DATA['day'] >= easter_start) & (DATA['day'] <= easter_end)]
 
     if not filtered_data_easter.empty:
+        filtered_data_easter['season'] = "Easter 2023"
+        daily_travelers_easter = filtered_data_easter.groupby(['season', 'day'])['viajeros'].sum().reset_index()
+
+        # Main bar chart for Easter
+        fig = px.bar(
+            daily_travelers_easter,
+            x='day',
+            y='viajeros',
+            title="Mobility Data for Easter 2023",
+            labels={'day': 'Date', 'viajeros': 'Number of Travelers'}
+        )
+        fig.update_layout(xaxis_tickformat="%Y-%m-%d", xaxis_title="Date", yaxis_title="Number of Travelers")
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Breakdown by origin autonomous communities
+        st.subheader("Breakdown by Origin Autonomous Communities")
         origin_data_easter = filtered_data_easter.groupby(
             ['comunidad_origen', 'day'])['viajeros'].sum().reset_index()
 
-        fig = px.line(
+        fig_origin = px.line(
             origin_data_easter,
             x='day',
             y='viajeros',
             color='comunidad_origen',
-            title="Mobility by Origin Autonomous Community - Easter 2023",
-            labels={'day': 'Date', 'viajeros': 'Number of Travelers', 'comunidad_origen': 'Autonomous Community'}
+            title="Origin Autonomous Community - Easter 2023",
+            labels={'day': 'Date', 'viajeros': 'Number of Travelers', 'comunidad_origen': 'Origin Community'}
         )
-        fig.update_layout(legend_title="Autonomous Community", xaxis_tickformat="%Y-%m-%d")
-        st.plotly_chart(fig, use_container_width=True)
+        fig_origin.update_layout(legend_title="Origin Community", xaxis_tickformat="%Y-%m-%d")
+        st.plotly_chart(fig_origin, use_container_width=True)
+
+        # Breakdown by destination autonomous communities
+        st.subheader("Breakdown by Destination Autonomous Communities")
+        dest_data_easter = filtered_data_easter.groupby(
+            ['comunidad_destino', 'day'])['viajeros'].sum().reset_index()
+
+        fig_dest = px.line(
+            dest_data_easter,
+            x='day',
+            y='viajeros',
+            color='comunidad_destino',
+            title="Destination Autonomous Community - Easter 2023",
+            labels={'day': 'Date', 'viajeros': 'Number of Travelers', 'comunidad_destino': 'Destination Community'}
+        )
+        fig_dest.update_layout(legend_title="Destination Community", xaxis_tickformat="%Y-%m-%d")
+        st.plotly_chart(fig_dest, use_container_width=True)
     else:
         st.write("No data available for Easter 2023 period.")
 
