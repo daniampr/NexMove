@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import base64
 from utils.helpers import DATA
 
@@ -14,7 +13,7 @@ def get_base64_image(image_path):
 def setup():
     st.set_page_config(
         page_title="Evolution",
-        page_icon="🔄",  # Icono de evolución
+        page_icon="🔄",
         layout="wide",
     )
 
@@ -28,7 +27,7 @@ def setup():
         [data-testid="stAppViewContainer"] {{
             background: url("data:image/jpg;base64,{background_image}") no-repeat center center fixed;
             background-size: cover;
-            color: #ffffff; /* Texto blanco */
+            color: #ffffff;
             font-family: 'Poppins', sans-serif;
         }}
         .header-container {{
@@ -36,7 +35,7 @@ def setup():
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 30vh; /* Ajustar para centrar verticalmente */
+            height: 30vh;
             text-align: center;
             background: rgba(0, 0, 0, 0.7);
             color: #ffffff;
@@ -54,24 +53,27 @@ def setup():
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
         }}
         .divider {{
-            border-top: 3px solid #00d2ff; /* Divider estilo NexMove */
+            border-top: 3px solid #00d2ff;
             margin: 20px 0;
         }}
-        .footer {{
-            font-family: 'Arial', sans-serif;
-            font-size: 0.9rem;
-            text-align: center;
-            color: #ffffff;
-            margin-top: 40px;
-            padding: 15px;
-            border-top: 2px solid #00d2ff;
-            background: #1b263b;
+        div[data-testid="stHorizontalBlock"] {{
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
         }}
-     /* Streamlit Selectbox Styling */
+        div[data-testid="stBlock"] {{
+            margin-bottom: 30px;
+        }}
+        div[data-testid="stSelectbox"] > label {{
+            color: #ffffff !important;
+            font-size: 16px;
+            font-weight: bold;
+        }}
         div[data-baseweb="select"] > div {{
-            background-color: #ffffff !important; /* White background */
-            color: #000000 !important; /* Black text */
-            border: 1px solid #00d2ff !important; /* NexMove blue border */
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #00d2ff !important;
             border-radius: 5px !important;
         }}
         </style>
@@ -79,113 +81,94 @@ def setup():
         unsafe_allow_html=True
     )
 
-# Función principal
+# Main function
 def main():
-    setup()  # Configuración inicial
+    setup()
 
-    # Títulos principales
-    #st.markdown("<h1 class='main-title'>NexMove: Mobility data at your fingertips</h1>", unsafe_allow_html=True)
-    st.markdown("<h2 class='subtitle'>INTERACTIVE DATA: EVOLUTION OVER THE YEARS</h2>", unsafe_allow_html=True)
+    # Main Title
+    st.markdown("<h2 class='header-title'>INTERACTIVE DATA: EVOLUTION OVER THE YEARS</h2>", unsafe_allow_html=True)
 
-    # Línea divisoria
+    # Divider
     st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 
-    # Asegurarse de que 'day' esté en formato datetime
+    # Ensure 'day' is in datetime format
     DATA['day'] = pd.to_datetime(DATA['day'], errors='coerce')
 
-    # Agrupar por año y mes, luego sumar la columna 'viajeros'
+    # Aggregate by year and month, then sum the 'viajeros' column
     monthly_travelers = DATA.groupby(['year', 'month'])['viajeros'].sum().reset_index()
 
-    # Crear una tabla pivote con 'month' como índice y columnas como años
+    # Create a pivot table with 'month' as rows and 'year' as columns
     pivoted_data = monthly_travelers.pivot(index='month', columns='year', values='viajeros')
 
-    # 1. Mostrar gráfico combinado de todos los años
-    st.write("## Total Number of Travelers per Month (Comparison by Year)")
+    # Combined chart for all years
+    st.write("<h3 style='text-align: center;'>Total Number of Travelers per Month (Comparison by Year)</h3>", unsafe_allow_html=True)
     st.line_chart(pivoted_data)
 
-    # 2. Mostrar gráficos individuales por año, organizados en columnas
+    # Individual charts for each year
     years = monthly_travelers['year'].unique()
-    cols = st.columns(len(years))  # Crear una columna para cada año
+    cols = st.columns(len(years))  # Create one column per year
 
     for i, year in enumerate(years):
-        with cols[i]:  # Usar cada columna para un año
-            st.write(f"### Total Travelers per Month in {year}")
+        with cols[i]:
+            st.markdown(f"<h4 style='text-align: center;'>Travelers in {year}</h4>", unsafe_allow_html=True)
             year_data = monthly_travelers[monthly_travelers['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
     st.divider()
 
-    # Sección de provincias
-    st.write("## Insights for each province (origin & destination)")
+    # Province-level insights
+    st.write("<h3 style='text-align: center;'>Insights for Each Province (Origin & Destination)</h3>", unsafe_allow_html=True)
 
-    # Obtener provincias únicas para origen y destino
+    # Unique provinces for origin and destination
     origin_provinces = DATA['provincia_origen_name'].unique()
     destination_provinces = DATA['provincia_destino_name'].unique()
 
-    col1, col2 = st.columns(2)  # Crear dos columnas para origen y destino
+    col1, col2 = st.columns(2)
 
-    # Selección y gráfico de provincia de origen
     with col1:
         selected_province = st.selectbox("Select Origin Province", origin_provinces)
         province_data = DATA[DATA['provincia_origen_name'] == selected_province]
         monthly_travelers_origin = province_data.groupby(['year', 'month'])['viajeros'].sum().reset_index()
-
-        st.write(f"### Travelers per Month (Origin: {selected_province})")
-
-        # Mostrar gráfico por año
+        st.write(f"<h4 style='text-align: center;'>Travelers per Month (Origin: {selected_province})</h4>", unsafe_allow_html=True)
         for year in years:
-            st.write(f"#### {year}")
             year_data = monthly_travelers_origin[monthly_travelers_origin['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
-    # Selección y gráfico de provincia de destino
     with col2:
         selected_province_destino = st.selectbox("Select Destination Province", destination_provinces)
         province_data_destino = DATA[DATA['provincia_destino_name'] == selected_province_destino]
         monthly_travelers_destino = province_data_destino.groupby(['year', 'month'])['viajeros'].sum().reset_index()
-
-        st.write(f"### Travelers per Month (Destination: {selected_province_destino})")
-
-        # Mostrar gráfico por año
+        st.write(f"<h4 style='text-align: center;'>Travelers per Month (Destination: {selected_province_destino})</h4>", unsafe_allow_html=True)
         for year in years:
-            st.write(f"#### {year}")
             year_data = monthly_travelers_destino[monthly_travelers_destino['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
     st.divider()
 
-    # Sección de comunidades autónomas
-    st.write("## Insights for each Autonomous Community (origin & destination)")
+    # Autonomous community insights
+    st.write("<h3 style='text-align: center;'>Insights for Each Autonomous Community (Origin & Destination)</h3>", unsafe_allow_html=True)
 
-    # Obtener comunidades únicas para origen y destino
+    # Unique communities for origin and destination
     origin_communities = DATA['comunidad_origen'].unique()
     destination_communities = DATA['comunidad_destino'].unique()
 
-    col3, col4 = st.columns(2)  # Crear dos columnas para origen y destino comunidad
+    col3, col4 = st.columns(2)
 
-    # Selección y gráfico de comunidad de origen
     with col3:
         selected_community = st.selectbox("Select Origin Autonomous Community", origin_communities)
         community_data = DATA[DATA['comunidad_origen'] == selected_community]
         monthly_travelers_origin_community = community_data.groupby(['year', 'month'])['viajeros'].sum().reset_index()
-
-        st.write(f"### Travelers per Month (Origin Community: {selected_community})")
-        # Mostrar gráfico por año
+        st.write(f"<h4 style='text-align: center;'>Travelers per Month (Origin Community: {selected_community})</h4>", unsafe_allow_html=True)
         for year in years:
-            st.write(f"#### {year}")
             year_data = monthly_travelers_origin_community[monthly_travelers_origin_community['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
-    # Selección y gráfico de comunidad de destino
     with col4:
         selected_community_destino = st.selectbox("Select Destination Autonomous Community", destination_communities)
         community_data_destino = DATA[DATA['comunidad_destino'] == selected_community_destino]
         monthly_travelers_destino_community = community_data_destino.groupby(['year', 'month'])['viajeros'].sum().reset_index()
-
-        st.write(f"### Travelers per Month (Destination Community: {selected_community_destino})")
-        # Mostrar gráfico por año
+        st.write(f"<h4 style='text-align: center;'>Travelers per Month (Destination Community: {selected_community_destino})</h4>", unsafe_allow_html=True)
         for year in years:
-            st.write(f"#### {year}")
             year_data = monthly_travelers_destino_community[monthly_travelers_destino_community['year'] == year].set_index('month')
             st.line_chart(year_data[['viajeros']])
 
