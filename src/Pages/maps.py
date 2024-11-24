@@ -21,7 +21,7 @@ def setup():
             return base64.b64encode(image_file.read()).decode()
 
     # Background styling
-    background_image = "starrynight_5.jpg"  # Path to your image file
+    background_image = "9_wallpaper.jpg"  # Path to your image file
     encoded_background = get_base64_image(background_image)
 
     # CSS Styling

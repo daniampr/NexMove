@@ -19,7 +19,7 @@ def setup():
             return base64.b64encode(image_file.read()).decode()
 
     # Background styling
-    background_image = "starrynight_5.jpg"  # Path to your background image
+    background_image = "9_wallpaper.jpg"  # Path to your background image
     encoded_background = get_base64_image(background_image)
 
     # CSS Styling
@@ -87,7 +87,7 @@ def main():
         st.stop()
 
     # Christmas Analysis
-    st.header("🎄 Christmas Mobility Patterns")
+    st.header("Christmas Mobility Patterns")
     christmas_periods = [("2022-12-23", "2023-01-07"), ("2023-12-23", "2024-01-07")]
 
     filtered_data = pd.DataFrame()
@@ -152,7 +152,7 @@ def main():
         st.write("No data available for the selected Christmas periods.")
 
     # Easter Analysis
-    st.header("🌸 Easter Mobility Patterns")
+    st.header("Easter Mobility Patterns")
     easter_start, easter_end = "2023-04-02", "2023-04-09"
     filtered_data_easter = DATA[(DATA['day'] >= easter_start) & (DATA['day'] <= easter_end)]
 
