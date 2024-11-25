@@ -3,7 +3,8 @@ import streamlit as st
 from utils.helpers import df_capitals, DATA
 import pydeck as pdk
 from datetime import datetime
-from data_analysis.plots import display_basic_weather_map, display_weather_with_color_transition
+import altair as alt
+from data_analysis.plots import display_basic_weather_map, display_weather_with_color_transition, create_travel_chart
 
 
 st.set_page_config(layout="wide")
@@ -15,7 +16,7 @@ st.subheader("TEMPERATURE ON SPECIFIC DAY")
 df_weather = df_capitals
 
 # Allow the user to select a date
-selected_date = st.date_input("Select a date", value=datetime(2023, 9, 8))
+selected_date = st.date_input("Select a date", value=datetime(2023, 1, 31))
 
 # Create two columns for displaying the maps
 col1, col2 = st.columns(2)
@@ -31,30 +32,20 @@ with col2:
     
 
 
-st.write(df_capitals)
 
 
-
-
-
-
-
-
-
-
-import altair as alt
 
 df = DATA
-st.write(df)
+#st.write(df)
 
 # Streamlit app setup
 st.title("Travel and Weather Insights")
 st.write("Analyze the relationship between weather and the number of travelers across provinces.")
 
 # Filter options
-province = st.selectbox("Select a province", df["provincia_destino_name"].unique())
-year = st.selectbox("Select a year", df["year"].unique())
-month = st.selectbox("Select a month", df["month"].unique())
+province = st.selectbox("Select a province", df["provincia_destino_name"].unique(), index=35)
+year = st.selectbox("Select a year", df["year"].unique(), index=2)
+month = st.selectbox("Select a month", df["month"].unique(), index=4)
 
 # Filter travel data based on user selection
 df_filtered_travel = df[
@@ -75,38 +66,31 @@ df_filtered_weather = df_weather[
     (df_weather["day"].dt.strftime("%B") == month)
 ]
 
+# Ensure the 'day' column in travel_origin and travel_destination is in datetime format
+travel_origin["day"] = pd.to_datetime(travel_origin["day"])
+travel_destination["day"] = pd.to_datetime(travel_destination["day"])
+
 # Merge weather data with travelers' data
 merged_origin = pd.merge(travel_origin, df_filtered_weather, on="day", how="left")
 merged_destination = pd.merge(travel_destination, df_filtered_weather, on="day", how="left")
 
-# Function to create the Altair line chart
-def create_travel_chart(df, y_field, title):
-    base = alt.Chart(df).mark_line(color="purple", point=True).encode(
-        x=alt.X("day:T", title="Day of the Month"),
-        y=alt.Y(f"{y_field}:Q", title="Number of Travelers"),
-        tooltip=[
-            alt.Tooltip("day:T", title="Date"),
-            alt.Tooltip("preciptype:N", title="Precipitation Type"),
-            alt.Tooltip("tempmax:Q", title="Max Temp (°C)"),
-            alt.Tooltip("tempmin:Q", title="Min Temp (°C)"),
-            alt.Tooltip(f"{y_field}:Q", title="Travelers"),
-        ]
-    )
+# Ensure `day_of_week` is available in the merged data
+merged_origin["day_of_week"] = merged_origin["day"].dt.day_name()
+merged_destination["day_of_week"] = merged_destination["day"].dt.day_name()
 
-    # Conditional coloring for points
-    points = base.mark_point(size=100).encode(
-        color=alt.condition(
-            alt.FieldOneOfPredicate("preciptype", ["snow"]),
-            alt.value("white"),  # Snow points are white
-            alt.condition(
-                alt.FieldOneOfPredicate("preciptype", ["rain"]),
-                alt.value("blue"),  # Rain points are blue
-                alt.value("purple")  # Default points are purple
-            )
-        )
-    )
-    
-    return (base + points).properties(title=title)
+# Clean the 'preciptype' column in both merged datasets
+def clean_preciptype(value):
+    if isinstance(value, str):
+        return value.strip("[]").lower()  # Remove brackets and convert to lowercase
+    return None
+
+merged_origin["preciptype"] = merged_origin["preciptype"].apply(clean_preciptype)
+merged_destination["preciptype"] = merged_destination["preciptype"].apply(clean_preciptype)
+
+
+
+
+
 
 # Create line charts
 origin_chart = create_travel_chart(
@@ -121,9 +105,54 @@ destination_chart = create_travel_chart(
     f"Travelers to {province} (Destination)"
 )
 
+
+
+# Create line charts
+origin_chart = create_travel_chart(
+    merged_origin.rename(columns={"viajeros": "Travelers"}), 
+    "Travelers", 
+    f"Travelers to {province} (Origin)",
+    precip_type_to_show="'rain'"
+)
+
+destination_chart = create_travel_chart(
+    merged_destination.rename(columns={"viajes": "Travelers"}), 
+    "Travelers", 
+    f"Travelers to {province} (Destination)",
+    precip_type_to_show="'rain'"
+)
+
+st.write("Displaying white points for rain. Put mouse on each point to see information of the day")
 # Display charts side by side
 col1, col2 = st.columns(2)
 with col1:
     st.altair_chart(origin_chart, use_container_width=True)
 with col2:
     st.altair_chart(destination_chart, use_container_width=True)
+
+
+# Create line charts
+origin_chart = create_travel_chart(
+    merged_origin.rename(columns={"viajeros": "Travelers"}), 
+    "Travelers", 
+    f"Travelers to {province} (Origin)"
+)
+
+destination_chart = create_travel_chart(
+    merged_destination.rename(columns={"viajes": "Travelers"}), 
+    "Travelers", 
+    f"Travelers to {province} (Destination)"
+)
+
+
+st.write("Displaying white points for snow. Put mouse on each point to see information of the day")
+# Display charts side by side
+col1, col2 = st.columns(2)
+with col1:
+    st.altair_chart(origin_chart, use_container_width=True)
+with col2:
+    st.altair_chart(destination_chart, use_container_width=True)
+
+
+
+

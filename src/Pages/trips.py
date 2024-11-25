@@ -166,7 +166,9 @@ def main():
     origin_communities = DATA['comunidad_origen'].unique()
     selected_origin_community = st.selectbox("Select Origin Autonomous Community", origin_communities)
 
-    st.write("### Select a Time Period for Origin Autonomous Community")
+
+
+    st.write("### Select a Time Period for Destination Autonomous Community")
     start_date_origin_community = st.date_input(
         "Start Date", value=pd.to_datetime("2022-01-01"),
         min_value=pd.to_datetime("2022-01-01"),
@@ -195,6 +197,45 @@ def main():
         st.bar_chart(daily_travelers_origin_community['viajeros'])
     else:
         st.write("No data available for the selected origin autonomous community and date range.")
+
+
+
+    # Divider
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+
+    st.write("### Select Destination Autonomous Community for Mobility Analysis")
+    destination_communities = DATA['comunidad_destino'].unique()
+    selected_destination_community = st.selectbox("Select Destination Autonomous Community", destination_communities)
+
+    st.write("### Select a Time Period for Destination Autonomous Community")
+    start_date_destination_community = st.date_input(
+        "Start Date", value=pd.to_datetime("2022-01-01"),
+        min_value=pd.to_datetime("2022-01-01"),
+        max_value=pd.to_datetime("2024-12-31"),
+        key="start_date_destination_community"
+    )
+    end_date_destination_community = st.date_input(
+        "End Date", value=pd.to_datetime("2022-12-31"),
+        min_value=pd.to_datetime("2022-01-01"),
+        max_value=pd.to_datetime("2024-12-31"),
+        key="end_date_destination_community"
+    )
+
+    filtered_data_destination_community = DATA[
+        (DATA['comunidad_origen'] == selected_destination_community) &
+        (DATA['day'] >= pd.to_datetime(start_date_destination_community)) &
+        (DATA['day'] <= pd.to_datetime(end_date_destination_community))
+    ]
+
+    if not filtered_data_destination_community.empty:
+        daily_travelers_destination_community = filtered_data_destination_community.groupby('day')['viajeros'].sum().reset_index()
+        daily_travelers_destination_community['day'] = daily_travelers_destination_community['day'].dt.strftime('%Y-%m-%d')
+
+        st.write(f"## Mobility Data for {selected_destination_community} (Destination)")
+        daily_travelers_destination_community.set_index('day', inplace=True)
+        st.bar_chart(daily_travelers_destination_community['viajeros'])
+    else:
+        st.write("No data available for the selected destination autonomous community and date range.")
 
 
 if __name__ == "__main__":

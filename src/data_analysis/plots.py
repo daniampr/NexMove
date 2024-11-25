@@ -2,6 +2,7 @@
 import pandas as pd
 import streamlit as st
 import pydeck as pdk
+import altair as alt
 
 # Coordinates for each province in Spain
 province_coords = {
@@ -231,3 +232,31 @@ def display_weather_with_color_transition(df_weather, selected_date):
         initial_view_state=view_state,
         tooltip={"text": "Province: {desc_provincia}\nTemp Avg: {temp_avg}°C"}
     ))
+
+
+
+
+# Function to create the Altair line chart
+def create_travel_chart(df, y_field, title, precip_type_to_show="'snow'"):
+    base = alt.Chart(df).mark_line(color="purple", point=True).encode(
+        x=alt.X("day:T", title="Day of the Month"),
+        y=alt.Y(f"{y_field}:Q", title="Number of Travelers"),
+        tooltip=[
+            alt.Tooltip("day:T", title="Date"),
+            alt.Tooltip("day_of_week:N", title="Day of the Week"),
+            alt.Tooltip("preciptype:N", title="Precipitation Type"),
+            alt.Tooltip("tempmax:Q", title="Max Temp (°C)"),
+            alt.Tooltip("tempmin:Q", title="Min Temp (°C)"),
+            alt.Tooltip(f"{y_field}:Q", title="Travelers"),
+        ]
+    )
+
+    points = base.mark_point(size=100).encode(
+        color=alt.condition(
+            alt.datum.preciptype == precip_type_to_show,  # First condition: Snow
+            alt.value("white"),              # White for Snow/rain
+            alt.value("purple"),              # Blue for Rain
+        )
+    )
+    
+    return (base + points).properties(title=title)
