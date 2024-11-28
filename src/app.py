@@ -18,7 +18,7 @@ def setup():
     )
 
     # Convert background image to base64
-    background_image = get_base64_image("9_wallpaper.jpg")
+    background_image = get_base64_image("wallpaper.jpg")
 
     # CSS Styling
     st.markdown(

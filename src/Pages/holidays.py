@@ -19,7 +19,7 @@ def setup():
             return base64.b64encode(image_file.read()).decode()
 
     # Background styling
-    background_image = "9_wallpaper.jpg"  # Path to your background image
+    background_image = "wallpaper.jpg"  # Path to your background image
     encoded_background = get_base64_image(background_image)
 
     # CSS Styling
