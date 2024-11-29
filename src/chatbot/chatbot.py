@@ -35,7 +35,7 @@ llm = ChatGroq(
     temperature=0.0
 )
 
-client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = openai.OpenAI(st.secrets["OPENAI_API_KEY"])
 
 field_descriptions = {
     "travelers": "The number of individuals traveling between the origin and destination provinces.",
