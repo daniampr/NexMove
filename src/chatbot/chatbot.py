@@ -53,9 +53,7 @@ field_descriptions = {
 
 
 def chat_completion(user_prompt: str, model: str):
-
     if model == "gpt-4o":
-        llm = OpenAI(api_token="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")
         connector = PandasConnector(
             {"original_df": DATA_simple_chat},
             field_descriptions=field_descriptions
@@ -63,7 +61,8 @@ def chat_completion(user_prompt: str, model: str):
 
         df = SmartDataframe(
             connector,
-            config={"llm": llm, "response_parser": OutputParser, "enable_cache": False, "conversational": False},
+            config={"llm": client, "response_parser": OutputParser,
+                    "enable_cache": False, "conversational": False},
             description="Dataframe containing daily mobility data between Spainish provinces."
         )
 
