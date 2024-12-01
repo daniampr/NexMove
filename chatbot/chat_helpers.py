@@ -37,7 +37,7 @@ with open("chatbot/config/assistant.json", "r") as f:
     model_config = json.load(f)
 
 with open("secrets.toml", "rb") as f:
-    api_keys = tomllib.load(f)
+    api_keys = st.secrets
 
 field_descriptions = {
     "trips": "The total number of trips/displacements taken between the origin and destination provinces.",
