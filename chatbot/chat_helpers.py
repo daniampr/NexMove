@@ -3,7 +3,6 @@ import tomllib
 import json
 import streamlit as st
 from pandasai import Agent
-from pandasai import SmartDataframe
 from pandasai.responses.response_parser import ResponseParser
 from pandasai.connectors import PandasConnector
 from langchain_groq.chat_models import ChatGroq
@@ -34,7 +33,7 @@ class OutputParser(ResponseParser):
 
 
 # Load configuration from JSON and TOML files
-with open("src/chatbot/config/assistant.json", "r") as f:
+with open("chatbot/config/assistant.json", "r") as f:
     model_config = json.load(f)
 
 with open("secrets.toml", "rb") as f:
