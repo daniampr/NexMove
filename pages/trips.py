@@ -215,7 +215,3 @@ def trips_main():
         st.bar_chart(daily_travelers_destination_community['viajeros'])
     else:
         st.write("No data available for the selected destination autonomous community and date range.")
-
-
-if __name__ == "__main__":
-    main()

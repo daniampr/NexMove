@@ -79,7 +79,3 @@ def chat_main():
                         st.session_state.messages.append(
                             {"role": "assistant", "content": error_message}
                         )
-
-
-if __name__ == '__main__':
-    main()
