@@ -2,10 +2,10 @@ import streamlit as st
 from PIL import Image
 from utils.helpers import get_base64_image
 # Correct import statements
-from pages.chat import chat_main
-from pages.evolution_days import evolution_days_main
-from pages.evolution_months import evolution_months_main
-from pages.holidays import holidays_main
+from src.pages.chat import chat_main
+from src.pages.evolution_days import evolution_days_main
+from src.pages.evolution_months import evolution_months_main
+from src.pages.holidays import holidays_main
 from pages.maps import maps_main
 from pages.trips import trips_main
 from pages.specific_trips import specific_trips_main
