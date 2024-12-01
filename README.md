@@ -1,6 +1,21 @@
 # NexMove
 Repository for the source code of our project NexMove: An interactive app for mobility data interactivity. Made by Nerea Gonzalez, Raul Fuente, Laura Quiñonero, Mar Climente &amp; Daniel Amirian
 
+## Teaser
+[![Watch our teaser in Youtube](https://img.youtube.com/vi/SBpZzWt_Wc4/0.jpg)](https://www.youtube.com/watch?v=SBpZzWt_Wc4)
+
+## Demo App
+
+Check out our interactive app by clicking the badge below:
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://nexmove.streamlit.app/)
+
+
+## Exploratory Data Analysis
+[![Colab Notebook](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/daniampr/NexMove/blob/main/notebooks/EDA-project.ipynb)
+
+Checkout our Exploratory Data Analysis of the dataset used in the project. The notebook is available in the link above.
+
 ## Setting up the environment
 
 ### 0. Prerequisites
