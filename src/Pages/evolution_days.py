@@ -1,34 +1,15 @@
 import streamlit as st
 import pandas as pd
-from utils.helpers import DATA
+from utils.helpers import DATA, get_base64_image
 
-# Function to encode image to base64
-def get_base64_image(image_path):
-    import base64
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode()
 
 # Configuración inicial
 def setup():
-    st.set_page_config(
-        page_title="Day of the Week Analysis",
-        page_icon="📅",
-        layout="wide",
-    )
-
-    # Convert background image to base64
-    background_image = get_base64_image("wallpaper.jpg")
 
     # CSS Styling
     st.markdown(
         f"""
         <style>
-        [data-testid="stAppViewContainer"] {{
-            background: url("data:image/jpg;base64,{background_image}") no-repeat center center fixed;
-            background-size: cover;
-            color: #ffffff; 
-            font-family: 'Poppins', sans-serif;
-        }}
         .header-container {{
             display: flex;
             flex-direction: column;
@@ -80,8 +61,9 @@ def setup():
         unsafe_allow_html=True
     )
 
+
 # Main function
-def main():
+def evolution_days_main():
     setup()
 
     # Main Title
@@ -170,5 +152,3 @@ def main():
             year_data = weekly_travelers_destino_community[weekly_travelers_destino_community['year'] == year].set_index('day_of_week')
             st.line_chart(year_data[['viajeros']])
 
-if __name__ == '__main__':
-    main()

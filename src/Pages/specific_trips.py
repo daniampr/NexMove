@@ -1,36 +1,15 @@
 import streamlit as st
 import pandas as pd
 import base64  # Import for encoding background image
-from utils.helpers import DATA
+from utils.helpers import DATA, get_base64_image
 
 
 # Setup configuration and global CSS
 def setup():
-    st.set_page_config(
-        page_title="Specific Trip Analysis",
-        page_icon="🚍",
-        layout="wide",
-    )
-
-    # Function to encode image to base64
-    def get_base64_image(image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode()
-
-    # Background styling
-    background_image = "wallpaper.jpg"  # Path to your image file
-    encoded_background = get_base64_image(background_image)
-
     # CSS Styling
     st.markdown(
         f"""
         <style>
-        [data-testid="stAppViewContainer"] {{
-            background: url("data:image/jpg;base64,{encoded_background}") no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Poppins', sans-serif;
-            color: #ffffff;  /* White text */
-        }}
         .main-title {{
             text-align: center;
             font-size: 2.5rem;
@@ -68,7 +47,7 @@ def setup():
 
 
 # Main function
-def main():
+def specific_trips_main():
     setup()
 
     # Title and subtitle
@@ -162,7 +141,3 @@ def main():
             st.line_chart(travelers_by_day_of_month_communities, height=300, use_container_width=True)
     else:
         st.write("No data available for the selected origin, destination, and date range for Communities.")
-
-
-if __name__ == "__main__":
-    main()

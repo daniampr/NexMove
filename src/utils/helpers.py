@@ -1,9 +1,10 @@
 import pandas as pd
+import base64
 
 # Carga los tres datasets
-data1 = pd.read_csv('../files/dataset/full_dataset_extended_2022.csv')
-data2 = pd.read_csv('../files/dataset/full_dataset_extended_2023.csv')
-data3 = pd.read_csv('../files/dataset/full_dataset_extended_2024.csv')
+data1 = pd.read_csv('files/dataset/full_dataset_extended_2022.csv')
+data2 = pd.read_csv('files/dataset/full_dataset_extended_2023.csv')
+data3 = pd.read_csv('files/dataset/full_dataset_extended_2024.csv')
 
 # Combina los tres datasets en uno solo
 DATA = pd.concat([data1, data2, data3], ignore_index=True)
@@ -30,16 +31,14 @@ DATA['month'] = pd.Categorical(DATA['month'], categories=month_order, ordered=Tr
 DATA['day_of_week'] = pd.Categorical(DATA['day_of_week'], categories=day_of_week_order, ordered=True)
 
 
-data1_chat = pd.read_csv('../files/dataset/dataset_eng_withdist_2022.csv')
-data2_chat = pd.read_csv('../files/dataset/dataset_eng_withdist_2023.csv')
-data3_chat = pd.read_csv('../files/dataset/dataset_eng_withdist_2024.csv')
+data1_chat = pd.read_csv('files/dataset/dataset_eng_withdist_2022.csv')
+data2_chat = pd.read_csv('files/dataset/dataset_eng_withdist_2023.csv')
+data3_chat = pd.read_csv('files/dataset/dataset_eng_withdist_2024.csv')
 
 DATA_simple_chat = pd.concat([data1_chat, data2_chat, data3_chat], ignore_index=True)
 
-
-
 # Load the data into a DataFrame
-df = pd.read_csv('../files/dataset/weather_observation.csv', sep=';')
+df = pd.read_csv('files/dataset/weather_observation.csv', sep=';')
 
 # Drop the 'cod_municipio' column
 df = df.drop(columns=['cod_municipio'])
@@ -73,11 +72,11 @@ df['desc_provincia'] = df['desc_provincia'].replace(province_mapping)
 # Dictionary of provinces and their capitals
 province_capitals = {
     'Alicante': 'Alicante/Alacant', 'Almería': 'Almería', 'Badajoz': 'Badajoz', 'Barcelona': 'Barcelona',
-    'Castellón': 'Castellón de la Plana/Castelló de la Plana', 'Ceuta': 'Ceuta', 'Ciudad Real': 'Ciudad Real', 
-    'Cuenca': 'Cuenca', 'Cáceres': 'Cáceres', 'Cádiz': 'Cádiz', 'Córdoba': 'Córdoba', 
-    'Girona': 'Girona', 'Granada': 'Granada', 'Guadalajara': 'Guadalajara', 
-    'Huelva': 'Huelva', 'Jaén': 'Jaén', 'Lleida': 'Lleida', 'Madrid': 'Madrid', 
-    'Murcia': 'Murcia', 'Málaga': 'Málaga', 'Ourense': 'Ourense', 'Las Palmas': 'Palmas de Gran Canaria', 
+    'Castellón': 'Castellón de la Plana/Castelló de la Plana', 'Ceuta': 'Ceuta', 'Ciudad Real': 'Ciudad Real',
+    'Cuenca': 'Cuenca', 'Cáceres': 'Cáceres', 'Cádiz': 'Cádiz', 'Córdoba': 'Córdoba',
+    'Girona': 'Girona', 'Granada': 'Granada', 'Guadalajara': 'Guadalajara',
+    'Huelva': 'Huelva', 'Jaén': 'Jaén', 'Lleida': 'Lleida', 'Madrid': 'Madrid',
+    'Murcia': 'Murcia', 'Málaga': 'Málaga', 'Ourense': 'Ourense', 'Las Palmas': 'Palmas de Gran Canaria',
     'Santa Cruz de Tenerife': 'Santa Cruz de Tenerife', 'Segovia': 'Segovia', 'Sevilla': 'Sevilla', 
     'Tarragona': 'Tarragona', 'Teruel': 'Teruel', 'Toledo': 'Toledo', 'Valencia': ';València', 
     'Valladolid': 'Valladolid', 'Zaragoza': 'Zaragoza', 'Albacete': 'Albacete', 
@@ -97,3 +96,9 @@ df_capitals = df[df['desc_municipio'].isin(capital_list)]
 
 # Reset the index for cleanliness
 df_capitals.reset_index(drop=True, inplace=True)
+
+
+# Function to encode image to base64
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode()

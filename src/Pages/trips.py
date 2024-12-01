@@ -6,31 +6,10 @@ from utils.helpers import DATA
 
 # Setup configuration and global CSS
 def setup():
-    st.set_page_config(
-        page_title="Mobility Data Analysis",
-        page_icon="🚀",
-        layout="wide",
-    )
-
-    # Function to encode image to base64
-    def get_base64_image(image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode()
-
-    # Background styling
-    background_image = "wallpaper.jpg"  # Path to your background image
-    encoded_background = get_base64_image(background_image)
-
     # CSS Styling
     st.markdown(
         f"""
         <style>
-        [data-testid="stAppViewContainer"] {{
-            background: url("data:image/jpg;base64,{encoded_background}") no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Poppins', sans-serif;
-            color: #ffffff;  /* White text */
-        }}
         .main-title {{
             text-align: center;
             font-size: 2.5rem;
@@ -68,7 +47,7 @@ def setup():
 
 
 # Main function
-def main():
+def trips_main():
     setup()
 
     # Title and subtitle

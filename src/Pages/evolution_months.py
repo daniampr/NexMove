@@ -2,34 +2,16 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import base64
-from utils.helpers import DATA
+from utils.helpers import DATA, get_base64_image
 
-# Function to encode image to base64
-def get_base64_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode()
 
 # Configuración inicial
 def setup():
-    st.set_page_config(
-        page_title="Evolution",
-        page_icon="🔄",
-        layout="wide",
-    )
-
-    # Convert background image to base64
-    background_image = get_base64_image("wallpaper.jpg")
 
     # CSS Styling
     st.markdown(
         f"""
         <style>
-        [data-testid="stAppViewContainer"] {{
-            background: url("data:image/jpg;base64,{background_image}") no-repeat center center fixed;
-            background-size: cover;
-            color: #ffffff;
-            font-family: 'Poppins', sans-serif;
-        }}
         .header-container {{
             display: flex;
             flex-direction: column;
@@ -81,8 +63,9 @@ def setup():
         unsafe_allow_html=True
     )
 
+
 # Main function
-def main():
+def evolution_months_main():
     setup()
 
     # Main Title

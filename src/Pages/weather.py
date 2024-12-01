@@ -3,8 +3,9 @@ import streamlit as st
 from utils.helpers import df_capitals, DATA
 import pydeck as pdk
 from datetime import datetime
-from data_analysis.plots import display_basic_weather_map, display_weather_with_color_transition
+from data_analysis.plots import display_basic_weather_map, display_weather_with_color_transition, create_travel_chart
 import altair as alt
+
 
 # Function to encode image to base64
 def get_base64_image(image_path):
@@ -12,27 +13,14 @@ def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode()
 
+
 # Configuración inicial
 def setup():
-    st.set_page_config(
-        page_title="NexMove: Travel and Weather Insights",
-        page_icon="🌡️",  # Thermometer icon
-        layout="wide",
-    )
-
-    # Convert background image to base64
-    background_image = get_base64_image("9_wallpaper.jpg")
 
     # CSS Styling
     st.markdown(
         f"""
         <style>
-        [data-testid="stAppViewContainer"] {{
-            background: url("data:image/jpg;base64,{background_image}") no-repeat center center fixed;
-            background-size: cover;
-            color: #ffffff; 
-            font-family: 'Poppins', sans-serif;
-        }}
         .header-title {{
             font-size: 2rem;
             font-weight: bold;
@@ -76,11 +64,12 @@ def setup():
         unsafe_allow_html=True
     )
 
+
 # Main function
-def main():
+def weather_main():
     setup()
 
-    # Header section
+   # Header section
     st.markdown(
         """
         <h1 class="header-title">NexMove: Mobility and Weather Insights</h1>
@@ -116,9 +105,12 @@ def main():
     st.write("Analyze the relationship between weather and the number of travelers across provinces.")
 
     # Filter options
-    province = st.selectbox("Select a province", DATA["provincia_destino_name"].unique())
-    year = st.selectbox("Select a year", DATA["year"].unique())
-    month = st.selectbox("Select a month", DATA["month"].unique())
+    province = st.selectbox("Select a province", DATA["provincia_destino_name"].unique(), index=35)
+    year = st.selectbox("Select a year", DATA["year"].unique(), index=1)
+    month = st.selectbox("Select a month", DATA["month"].unique(), index=4)
+
+
+
 
     # Filter and aggregate data
     df_filtered_travel = DATA[
@@ -138,53 +130,17 @@ def main():
     ]
 
     # Merge weather with travel data
+    # Ensure "day" is datetime in both DataFrames before merging
+    travel_origin["day"] = pd.to_datetime(travel_origin["day"])
+    travel_destination["day"] = pd.to_datetime(travel_destination["day"])
+
+    # Merge weather with travel data
     merged_origin = pd.merge(travel_origin, df_filtered_weather, on="day", how="left")
     merged_destination = pd.merge(travel_destination, df_filtered_weather, on="day", how="left")
 
-    # Function to create Altair chart
-    def create_travel_chart(df, y_field, title):
-        base = alt.Chart(df).mark_line(color="purple", point=True).encode(
-            x=alt.X("day:T", title="Day of the Month"),
-            y=alt.Y(f"{y_field}:Q", title="Number of Travelers"),
-            tooltip=[
-                alt.Tooltip("day:T", title="Date"),
-                alt.Tooltip("preciptype:N", title="Precipitation Type"),
-                alt.Tooltip("tempmax:Q", title="Max Temp (°C)"),
-                alt.Tooltip("tempmin:Q", title="Min Temp (°C)"),
-                alt.Tooltip(f"{y_field}:Q", title="Travelers"),
-            ]
-        )
-        points = base.mark_point(size=100).encode(
-            color=alt.condition(
-                alt.FieldOneOfPredicate("preciptype", ["snow"]),
-                alt.value("white"),
-                alt.condition(
-                    alt.FieldOneOfPredicate("preciptype", ["rain"]),
-                    alt.value("blue"),
-                    alt.value("purple")
-                )
-            )
-        )
-        return (base + points).properties(title=title)
 
-    origin_chart = create_travel_chart(
-        merged_origin.rename(columns={"viajeros": "Travelers"}), 
-        "Travelers", 
-        f"Travelers to {province} (Origin)"
-    )
 
-    destination_chart = create_travel_chart(
-        merged_destination.rename(columns={"viajes": "Travelers"}), 
-        "Travelers", 
-        f"Travelers to {province} (Destination)"
-    )
-
-    # Display charts
-    col3, col4 = st.columns(2)
-    with col3:
-        st.altair_chart(origin_chart, use_container_width=True)
-    with col4:
-        st.altair_chart(destination_chart, use_container_width=True)
-
-if __name__ == '__main__':
-    main()
+    #origin_chart = create_travel_chart(merged_origin.rename(columns={"viajes": "Travelers"}),  "Travelers",  f"Travelers to {province} (Origin)", "Rain")
+    destination_chart = create_travel_chart(merged_destination.rename(columns={"viajes": "Travelers"}),  "Travelers",  f"Travelers to {province} (Destination)", "Rain") #"'rain'")
+    st.altair_chart(destination_chart, use_container_width=True)
+    st.write("Put mouse on any point to see the day, precipitation of that day, maximum and minimum temperatures, and number of travelers.")

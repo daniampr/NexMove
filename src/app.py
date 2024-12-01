@@ -1,24 +1,25 @@
 import streamlit as st
 from PIL import Image
-import base64
+from utils.helpers import get_base64_image
+# Correct import statements
+from pages.chat import chat_main
+from pages.evolution_days import evolution_days_main
+from pages.evolution_months import evolution_months_main
+from pages.holidays import holidays_main
+from pages.maps import maps_main
+from pages.trips import trips_main
+from pages.specific_trips import specific_trips_main
+from pages.weather import weather_main
+
+ # OS function to get current relative path
+import os
+PATH = os.getcwd()  # Get current working directory
 
 
-# Function to encode image to base64
-def get_base64_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode()
-
-
-# Configuración inicial
-def setup():
-    st.set_page_config(
-        page_title="NexMove",
-        page_icon="🚀",  # Icono de cohete
-        layout="wide",
-    )
-
+@st.cache_data
+def apply_background(image_path: str = "files/wallpaper.jpg"):
     # Convert background image to base64
-    background_image = get_base64_image("wallpaper.jpg")
+    background_image = get_base64_image(image_path)
 
     # CSS Styling
     st.markdown(
@@ -27,9 +28,21 @@ def setup():
         [data-testid="stAppViewContainer"] {{
             background: url("data:image/jpg;base64,{background_image}") no-repeat center center fixed;
             background-size: cover;
-            color: #ffffff; /* Texto blanco */
+            color: #ffffff; 
             font-family: 'Poppins', sans-serif;
         }}
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# Configuración inicial
+def setup():
+
+    # CSS Styling
+    st.markdown(
+        f"""
+        <style>
         .header-container {{
             display: flex;
             flex-direction: column;
@@ -109,12 +122,15 @@ def main():
             <div class='header-title'>NexMove</div>
             <div class='header-subtitle'>Mobility data at your fingertips</div>
             <div class='logo-container'>
-                <img src="data:image/png;base64,{get_base64_image('logo_v2-removebg-preview.png')}" class='logo' alt='NexMove Logo'>
+                <img src="data:image/png;base64,{get_base64_image('files/logo.png')}" class='logo' alt='NexMove Logo'>
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
+
+    # Espaciador para que el contenido no quede debajo del encabezado fijo
+    st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
 
     # Espaciador para que el contenido no quede debajo del encabezado fijo
     st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
@@ -129,8 +145,6 @@ def main():
     with st.expander("Our mission", expanded=False):
         st.markdown("Our mission is to collaborate with Telefónica on a project that aligns with our studies while exploring our interests in Natural Language Generation and Data Analysis/Visualization. By combining our skills, we want to build a tool that helps Telefónica better organize and understand its data.")
 
-
-    
     # Reproducir automaticamente video de youtube
     st.video("https://www.youtube.com/watch?v=SBpZzWt_Wc4", autoplay=True)
 
@@ -141,5 +155,89 @@ def main():
     )
 
 
+def setup_pages():
+
+    # -- Pages Setup --
+    main_page = st.Page(
+        main,
+        title="Home",
+        icon=":material/home:",
+        default=True,
+    )
+
+    chat_page = st.Page(
+        chat_main,
+        title="Chat",
+        icon=":material/smart_toy:",
+    )
+
+    evolution_days_page = st.Page(
+        evolution_days_main,
+        title="Evolution Days",
+        icon=":material/insert_chart_outlined:",
+    )
+
+    evolution_months_page = st.Page(
+        evolution_months_main,
+        title="Evolution Months",
+        icon=":material/insert_chart_outlined:",
+    )
+
+    holidays_page = st.Page(
+        holidays_main,
+        title="Holidays",
+        icon=":material/calendar_today:",
+    )
+
+    maps_page = st.Page(
+        maps_main,
+        title="Maps",
+        icon=":material/map:",
+    )
+
+    specific_trips_page = st.Page(
+        specific_trips_main,
+        title="Specific Trips",
+        icon=":material/luggage:",
+    )
+
+    trips_page = st.Page(
+        trips_main,
+        title="Trips",
+        icon=":material/directions_bus:",
+    )
+
+    weather_page = st.Page(
+        weather_main,
+        title="Weather",
+        icon=":material/wb_sunny:",
+    )
+
+    # -- Navigation Setup --
+    pages = st.navigation(
+        {
+            "": [main_page],
+            "Interact with the data!": [evolution_days_page,
+                                        evolution_months_page,
+                                        holidays_page, maps_page,
+                                        specific_trips_page,
+                                        trips_page, weather_page],
+            "Chat with the data!": [chat_page],
+        }
+    )
+
+    st.set_page_config(
+        page_title="NexMove",
+        page_icon=":rocket:",
+        layout="wide",
+        initial_sidebar_state="auto",
+    )
+
+    # -- Shared on all pages --
+    st.logo("files/logo.png", size='large', link="https://nexmove.streamlit.app")
+    apply_background()
+
+    pages.run()
+
 if __name__ == '__main__':
-    main()
+    setup_pages()
