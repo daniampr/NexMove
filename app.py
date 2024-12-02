@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.helpers import get_base64_image
+from utils.helpers import get_base64_image, setup_headers
 # Correct import statements
 from pages.chat import chat_main
 from pages.evolution_days import evolution_days_main
@@ -9,10 +9,6 @@ from pages.maps import maps_main
 from pages.trips import trips_main
 from pages.specific_trips import specific_trips_main
 from pages.weather import weather_main
-
- # OS function to get current relative path
-import os
-PATH = os.getcwd()  # Get current working directory
 
 
 @st.cache_data
@@ -35,84 +31,9 @@ def apply_background(image_path: str = "files/wallpaper.jpg"):
     )
 
 
-# Configuración inicial
-def setup():
-
-    # CSS Styling
-    st.markdown(
-        f"""
-        <style>
-        .header-container {{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 50vh; /* Ajustar para centrar verticalmente */
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            color: #ffffff;
-        }}
-        .header-title {{
-            font-size: 3rem;
-            font-weight: bold;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }}
-        .header-subtitle {{
-            font-size: 1.5rem;
-            margin: 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }}
-        .logo-container {{
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }}
-        .logo {{
-            width: 150px; /* Tamaño reducido para el logo */
-        }}
-        .cta-buttons {{
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-top: 30px;
-        }}
-        .cta-button {{
-            background-color: #00d2ff;
-            color: #ffffff;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease, transform 0.2s;
-        }}
-        .cta-button:hover {{
-            background-color: #008fb3;
-            transform: scale(1.05);
-        }}
-        .footer {{
-            font-family: 'Arial', sans-serif;
-            font-size: 0.9rem;
-            text-align: center;
-            color: #ffffff;
-            margin-top: 40px;
-            padding: 15px;
-            border-top: 2px solid #00d2ff;
-            background: #1b263b;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-
 # Función principal
 def main():
-    setup()  # Configuración inicial
+    setup_headers()  # Configuración inicial
 
     # Encabezado destacado
     st.markdown(
@@ -237,6 +158,7 @@ def setup_pages():
     apply_background()
 
     pages.run()
+
 
 if __name__ == '__main__':
     setup_pages()

@@ -1,58 +1,14 @@
 import streamlit as st
-import pandas as pd
 import pydeck as pdk
-import base64  # Importing base64 for encoding images
 from datetime import datetime
-from utils.helpers import DATA, get_base64_image
+from utils.helpers import load_dataset_main, setup_headers
 from data_analysis.plots import plot_map, province_coords
-
-
-# Setup configuration and global CSS
-def setup():
-    
-    # CSS Styling
-    st.markdown(
-        f"""
-        <style>
-        .main-title {{
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }}
-        .subtitle {{
-            text-align: center;
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }}
-        .divider {{
-            border-top: 3px solid #00aaff;
-            margin: 20px 0;
-        }}
-        div[data-testid="stSelectbox"] > label {{
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: bold;
-        }}
-        div[data-testid="stHorizontalBlock"] {{
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
 
 
 # Main function
 def maps_main():
-    setup()
+    DATA = load_dataset_main()
+    setup_headers()
 
     # Title and subtitle
     st.markdown("<h1 class='main-title'>Map Visualization</h1>", unsafe_allow_html=True)

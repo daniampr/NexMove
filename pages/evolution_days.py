@@ -1,70 +1,12 @@
 import streamlit as st
 import pandas as pd
-from utils.helpers import DATA, get_base64_image
-
-
-# Configuración inicial
-def setup():
-
-    # CSS Styling
-    st.markdown(
-        f"""
-        <style>
-        .header-container {{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 30vh;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            color: #ffffff;
-            margin-bottom: 30px;
-        }}
-        .header-title {{
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }}
-        .header-subtitle {{
-            font-size: 1.5rem;
-            margin: 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }}
-        .divider {{
-            border-top: 3px solid #00d2ff;
-            margin: 20px 0;
-        }}
-        div[data-testid="stHorizontalBlock"] {{
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-        }}
-        div[data-testid="stBlock"] {{
-            margin-bottom: 30px;
-        }}
-        div[data-testid="stSelectbox"] > label {{
-            color: #ffffff !important;
-            font-size: 16px;
-            font-weight: bold;
-        }}
-        div[data-baseweb="select"] > div {{
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border: 1px solid #00d2ff !important;
-            border-radius: 5px !important;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+from utils.helpers import load_dataset_main, setup_headers
 
 
 # Main function
 def evolution_days_main():
-    setup()
+    DATA = load_dataset_main()
+    setup_headers()
 
     # Main Title
     st.markdown("<h2 class='header-title'>INTERACTIVE DATA: EVOLUTION BY DAY OF THE WEEK</h2>", unsafe_allow_html=True)
@@ -151,4 +93,3 @@ def evolution_days_main():
         for year in years:
             year_data = weekly_travelers_destino_community[weekly_travelers_destino_community['year'] == year].set_index('day_of_week')
             st.line_chart(year_data[['viajeros']])
-

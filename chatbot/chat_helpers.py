@@ -1,5 +1,4 @@
 # chatbot/chat_helpers.py
-import tomllib
 import json
 import streamlit as st
 from pandasai import Agent
@@ -8,8 +7,7 @@ from pandasai.connectors import PandasConnector
 from langchain_groq.chat_models import ChatGroq
 from langchain_openai.chat_models import ChatOpenAI
 import plotly.graph_objects as go
-
-from utils.helpers import DATA_simple_chat
+from utils.helpers import load_dataset_chat
 
 
 class OutputParser(ResponseParser):
@@ -29,7 +27,6 @@ class OutputParser(ResponseParser):
         else:
             st.write(result['value'])
         return result['value']
-
 
 
 # Load configuration from JSON and TOML files
@@ -69,7 +66,7 @@ def setup_llm_client(model: str):
             temperature=model_config['temperature'],
             max_tokens=model_config['max_tokens']
         )
-
+    DATA_simple_chat = load_dataset_chat()
     connector = PandasConnector(
         {"original_df": DATA_simple_chat},
         field_descriptions=field_descriptions

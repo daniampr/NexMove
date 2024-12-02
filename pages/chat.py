@@ -1,22 +1,24 @@
 import streamlit as st
 from chatbot.chat_helpers import chat_completion
-from utils.helpers import DATA_simple_chat
+from utils.helpers import load_dataset_chat
 
 # Constants
 MODELS = ["gpt-4o-mini", "mixtral-8x7b-32768", "llama-3.2-3b-preview"]
 
 
 def chat_main():
-    # Set the title and description
-    st.title("NexMove: Mobility Data at Your Fingertips")
+    DATA_simple_chat = load_dataset_chat()
 
-    # with st.expander("ℹ️ Disclaimer"):
-    #    st.caption(
-    #        """
-    #        We appreciate your engagement! This chatbot provides insights into mobility data.
-    #        Please note, the demo version may have limitations based on usage. Thank you for understanding.
-    #        """
-    #    )
+    # Set the title and description
+    st.title("🤖 NexBot: Generative AI at Your Fingertips")
+
+    with st.expander("ℹ️ Disclaimer"):
+        st.caption(
+            """
+            We appreciate your engagement! This chatbot provides insights into mobility data.
+            Please note, the demo version may have limitations based on usage. Thank you for understanding.
+            """
+        )
 
     # Initialize session state for messages and selected model
     if "messages" not in st.session_state:
@@ -27,6 +29,8 @@ def chat_main():
     st.write(DATA_simple_chat)
 
     # Model selection dropdown
+
+    st.write("Select a model to chat with:")
     model = st.selectbox(
         "Select model ",
         MODELS,
@@ -62,7 +66,7 @@ def chat_main():
             with st.chat_message("assistant"):
                 with st.spinner("Thinking..."):
                     try:
-                        
+
                         response, code_executed = chat_completion(prompt, model)
                         st.markdown(response)  # Display the assistant's response
                         st.session_state.messages.append(

@@ -1,54 +1,12 @@
 import streamlit as st
 import pandas as pd
-import base64  # For encoding the background image
-from utils.helpers import DATA
-
-
-# Setup configuration and global CSS
-def setup():
-    # CSS Styling
-    st.markdown(
-        f"""
-        <style>
-        .main-title {{
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }}
-        .subtitle {{
-            text-align: center;
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }}
-        .divider {{
-            border-top: 3px solid #00aaff;
-            margin: 20px 0;
-        }}
-        div[data-testid="stSelectbox"] > label {{
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: bold;
-        }}
-        div[data-testid="stHorizontalBlock"] {{
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+from utils.helpers import load_dataset_main, setup_headers
 
 
 # Main function
 def trips_main():
-    setup()
+    DATA = load_dataset_main()
+    setup_headers()
 
     # Title and subtitle
     st.markdown("<h1 class='main-title'>NexMove: Mobility Data at Your Fingertips</h1>", unsafe_allow_html=True)
@@ -145,8 +103,6 @@ def trips_main():
     origin_communities = DATA['comunidad_origen'].unique()
     selected_origin_community = st.selectbox("Select Origin Autonomous Community", origin_communities)
 
-
-
     st.write("### Select a Time Period for Destination Autonomous Community")
     start_date_origin_community = st.date_input(
         "Start Date", value=pd.to_datetime("2022-01-01"),
@@ -176,8 +132,6 @@ def trips_main():
         st.bar_chart(daily_travelers_origin_community['viajeros'])
     else:
         st.write("No data available for the selected origin autonomous community and date range.")
-
-
 
     # Divider
     st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
