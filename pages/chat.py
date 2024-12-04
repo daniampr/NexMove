@@ -26,7 +26,7 @@ def chat_main():
 
     # Data preview section
     st.subheader("Data Preview")
-    st.write(DATA_simple_chat)
+    st.write(DATA_simple_chat.sample(500))
 
     # Model selection dropdown
 
@@ -66,16 +66,16 @@ def chat_main():
             with st.chat_message("assistant"):
                 with st.spinner("Thinking..."):
                     try:
-
-                        response, code_executed = chat_completion(prompt, model)
+                        response, code_executed = chat_completion(
+                            prompt, model, st.session_state.messages)
                         st.markdown(response)  # Display the assistant's response
                         st.session_state.messages.append(
                             {"role": "assistant", "content": response}
                         )
-
-                        # Optionally display the executed code
-                        with st.expander("🔍 View code executed"):
-                            st.code(code_executed)
+                        if code_executed is not None:
+                            # Optionally display the executed code
+                            with st.expander("🔍 View code executed"):
+                                st.code(code_executed)
 
                     except Exception as e:
                         error_message = "Oops! An error occurred while processing your request."
