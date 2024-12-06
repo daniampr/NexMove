@@ -57,7 +57,6 @@ pip install -r requirements.txt
 ### 4. Run the application
 To run the application, execute the following commands:
 ```bash
-cd src
 streamlit run app.py
 ```
 
