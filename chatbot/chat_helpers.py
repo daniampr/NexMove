@@ -7,6 +7,7 @@ from pandasai.connectors import PandasConnector
 from langchain_groq.chat_models import ChatGroq
 from langchain_openai.chat_models import ChatOpenAI
 import plotly.graph_objects as go
+from typing import Optional
 from pydantic import BaseModel, Field
 from utils.helpers import load_dataset_chat
 
@@ -17,7 +18,8 @@ class ChitchatChecker(BaseModel):
     '''
     Class to check if the response is a chitchat message or a usecase message.
     '''
-    is_chitchat: bool = Field(..., description="Indicates true if the response is a chitchat message. False if it is a usecase message related with a query about some dataframe.")
+    is_chitchat: bool = Field(..., description="Indicates true if the user input is a chitchat message. False if the user prompt related with a query about some dataframe.")
+    response_score: Optional[int] = Field(default=None, description="How confident the llm is about the boolean response, between 0 to 10")
 
 
 class OutputParser(ResponseParser):
@@ -90,17 +92,6 @@ def setup_llm_client(model: str):
 
     return llm
 
-# df = SmartDataframe(
-#     connector,
-#     config={
-#         "llm": llm,
-#         "response_parser": OutputParser,
-#         "enable_cache": False,
-#         "conversational": False
-#     },
-#     description="Dataframe containing daily mobility data between Spanish provinces. If you are asked to plot something, use the plotly library to create it in case no module is specified."
-# )
-
 
 @st.cache_resource
 def setup_pandasai_agent(_llm):
@@ -159,8 +150,7 @@ def chat_completion_usecase(user_prompt: str, model: str, llm=None):
         )}
     ]
     assistant_response = llm.invoke(messages).content  # Get response from the model
-    messages.append({"role": "assistant", "content": assistant_response})
-    return assistant_response, code_executed, messages
+    return assistant_response, code_executed
 
 
 def chat_completion(user_prompt: str, model: str, messages=None):
@@ -174,7 +164,7 @@ def chat_completion(user_prompt: str, model: str, messages=None):
         response (str): The response from the model.
         code_executed (str): The code executed by the PandasAI agent, if any.
     '''
-    llm = setup_llm_client(model)
+    llm = setup_llm_client("gpt-4o-mini")
     structured_output = llm.with_structured_output(ChitchatChecker)
     if messages is None:
         messages = [
@@ -184,11 +174,9 @@ def chat_completion(user_prompt: str, model: str, messages=None):
     # Boolean value to check if the response is a chitchat message or a usecase message
     prompt_type = structured_output.invoke(messages)
 
-    # Debug print statements
-    st.write(structured_output)
-    st.write(type(structured_output.is_chitchat))
-    if prompt_type.chitchat is False:
-        st.write("entered in here!!")
+    if 'gpt' not in model:
+        llm = setup_llm_client(model)
+    if prompt_type.is_chitchat is False:
         # Call the function to perform the query to the dataframe and get the NL response
         return chat_completion_usecase(user_prompt, model, llm)
 
