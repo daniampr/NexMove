@@ -187,5 +187,4 @@ def chat_completion(user_prompt: str, model: str, messages=None):
     ]
     response = llm.invoke(messages)
     chitchat_response = response.content
-    st.write(messages)
     return chitchat_response, None
